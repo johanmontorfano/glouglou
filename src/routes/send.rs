@@ -59,11 +59,11 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
                 built_email.cc_name =  Option::Some(name.into());
             }
 
-            if let Err(sending_err) = sender.send_email(built_email) {
-                println!("Error while sending an email: {}", sending_err);
-                response.status = "FETCHING_FAILED".into();
-            } else {
+            if let Ok(res) = sender.send_email(built_email) {
                 response.status = "MAIL_SENT".into();
+                println!("{}: {}", res.code(), res.code().detail);
+            } else {
+                response.status = "FETCHING_FAILED".into();
             }
         } else {
             response.status = "INVALID_API_KEY".into();

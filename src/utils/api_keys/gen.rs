@@ -6,7 +6,7 @@ pub fn generate_api_key(length: usize) -> String {
     let mut rand_gen = rand::thread_rng();
 
     for _ in 0..length {
-        let rand_ascii_dec = rand_gen.gen_range(39..=126);
+        let rand_ascii_dec = rand_gen.gen_range(39..=90);
         output.push(char::from_u32(rand_ascii_dec).unwrap().to_string());
     }
 
