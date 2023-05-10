@@ -59,7 +59,8 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
                 built_email.cc_name =  Option::Some(name.into());
             }
 
-            if sender.send_email(built_email).is_err() {
+            if let Err(sending_err) = sender.send_email(built_email) {
+                println!("Error while sending an email: {}", sending_err);
                 response.status = "FETCHING_FAILED".into();
             } else {
                 response.status = "MAIL_SENT".into();
