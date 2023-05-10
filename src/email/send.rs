@@ -1,8 +1,8 @@
+use crate::config::generic::GenConfEmail;
 use lettre::{
-    transport::smtp::{authentication::Credentials,  response::Response, Error},
+    transport::smtp::{authentication::Credentials, response::Response, Error},
     Message, SmtpTransport, Transport,
 };
-use crate::config::generic::GenConfEmail;
 
 // This `struct` allows the usage of `lettre` inside the whole application by setting only one perpetuous connection
 // with the server that is reused within the app.
@@ -16,6 +16,8 @@ pub struct Email {
     pub from_name: String,
     pub to_email: String,
     pub to_name: String,
+    pub cc_email: Option<String>,
+    pub cc_name: Option<String>,
     pub subject: String,
     pub body: String,
 }
@@ -39,7 +41,7 @@ impl Turkey {
     // Send an email.
     pub fn send_email(&self, email: Email) -> Result<Response, Error> {
         // Creates the email.
-        let email = Message::builder()
+        let mut email_builder = Message::builder()
             .from(
                 format!("{} <{}>", email.from_name, self.email_config_copy.address)
                     .parse()
@@ -48,9 +50,19 @@ impl Turkey {
             .to(format!("{} <{}>", email.to_name, email.to_email)
                 .parse()
                 .unwrap())
-            .subject(email.subject)
-            .body(email.body)
-            .unwrap();
+            .subject(email.subject);
+
+        // Determines if there is a CC, otherwise it does nothing.
+        if email.cc_email.is_some() && email.cc_name.is_some() {
+            email_builder = email_builder.cc(
+                format!("{} <{}>", email.cc_name.unwrap(), email.cc_email.unwrap())
+                    .parse()
+                    .unwrap(),
+            );
+        }
+
+        let email = email_builder.body(email.body).unwrap();
+
         return self.connection.send(&email);
     }
 }

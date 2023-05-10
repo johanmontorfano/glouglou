@@ -40,15 +40,26 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
             email = &strng_email;
 
             let sender = Turkey::make_smtp(&conf.email);
-            let email = Email {
+            let mut built_email = Email {
                 from_name: conf.email.name.clone(),
                 to_email: email.into(),
                 to_name: name.into(),
                 subject: send_subject,
                 body: send_body,
+                cc_email: Option::None,
+                cc_name: Option::None,
             };
 
-            if sender.send_email(email).is_err() {
+            if req.params.contains_key("cc") {
+                let (name, mut email) = send_to.split_once("<").unwrap();
+                let strng_email = email.replace(">", "");
+                email = &strng_email;
+
+                built_email.cc_email = Option::Some(email.into());
+                built_email.cc_name =  Option::Some(name.into());
+            }
+
+            if sender.send_email(built_email).is_err() {
                 response.status = "FETCHING_FAILED".into();
             } else {
                 response.status = "MAIL_SENT".into();
