@@ -2,7 +2,7 @@ use super::{
     server::Server,
     utils::{request::Request, response::Response},
 };
-use crate::{get_router, utils::log::Log, config::generic::GenericConfiguration};
+use crate::{config::generic::GenericConfiguration, get_router, utils::log::Log};
 use std::{
     collections::HashMap,
     io::{BufRead, BufReader, Write},
