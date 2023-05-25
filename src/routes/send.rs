@@ -33,6 +33,7 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
             let send_to = decode_uri(req.params.get("to").unwrap().clone());
             let send_body = decode_uri(req.params.get("body").unwrap().clone());
             let send_subject = decode_uri(req.params.get("subject").unwrap().clone());
+            let send_with_name = decode_uri(req.params.get("from-name").unwrap().clone());
 
             // As `to` is formatted like NAME <EMAIL>, it's parsed.
             let (name, mut email) = send_to.split_once("<").unwrap();
@@ -41,7 +42,7 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
 
             let sender = Turkey::make_smtp(&conf.email);
             let mut built_email = Email {
-                from_name: conf.email.name.clone(),
+                from_name: send_with_name.into(),
                 to_email: email.into(),
                 to_name: name.into(),
                 subject: send_subject,

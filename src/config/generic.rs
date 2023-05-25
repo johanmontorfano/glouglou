@@ -12,8 +12,7 @@ pub struct GenConfEmail {
     pub address: String,
     pub password: String,
     pub host: String,
-    pub port: u32,
-    pub name: String
+    pub port: u32
 }
 
 // Configuration of the server for the REST API.
