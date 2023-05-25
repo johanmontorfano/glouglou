@@ -20,6 +20,7 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
         && req.params.contains_key("to")
         && req.params.contains_key("subject")
         && req.params.contains_key("body")
+        && req.params.contains_key("from-name")
     {
         response.code = 200;
         response.status = "OK".into();
