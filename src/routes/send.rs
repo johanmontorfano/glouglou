@@ -59,13 +59,13 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
                 email = &strng_email;
 
                 built_email.cc_email = Option::Some(email.into());
-                built_email.cc_name =  Option::Some(name.into());
+                built_email.cc_name = Option::Some(name.into());
             }
 
             match sender.send_email(built_email) {
                 Ok(res) => {
-                response.status = "MAIL_SENT".into();
-                println!("{}: {}", res.code(), res.code().detail);
+                    response.status = "MAIL_SENT".into();
+                    println!("{}: {}", res.code(), res.code().detail);
                 }
                 Err(reason) => {
                     println!("Failed to fetch email: {}", reason);
