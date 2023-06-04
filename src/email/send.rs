@@ -1,5 +1,6 @@
 use crate::config::generic::GenConfEmail;
 use lettre::{
+    message::Mailbox,
     transport::smtp::{authentication::Credentials, response::Response, Error},
     Message, SmtpTransport, Transport,
 };
@@ -40,6 +41,10 @@ impl Turkey {
 
     // Send an email.
     pub fn send_email(&self, email: Email) -> Result<Response, Error> {
+        // Build mailboxes now to prevent any `MissingParts` server crash.
+        let source_mailbox =
+            format!("{} <{}>", email.from_name, self.email_config_copy.address).parse::<Mailbox>();
+
         // Creates the email.
         let mut email_builder = Message::builder()
             .from(
@@ -54,11 +59,13 @@ impl Turkey {
 
         // Determines if there is a CC, otherwise it does nothing.
         if email.cc_email.is_some() && email.cc_name.is_some() {
-            email_builder = email_builder.cc(
-                format!("{} <{}>", email.cc_name.unwrap(), email.cc_email.unwrap())
-                    .parse()
-                    .unwrap(),
-            );
+            email_builder = email_builder.cc(format!(
+                "{} <{}>",
+                email.cc_name.unwrap(),
+                email.cc_email.unwrap()
+            )
+            .parse()
+            .unwrap());
         }
 
         let email = email_builder.body(email.body).unwrap();

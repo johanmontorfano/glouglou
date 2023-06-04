@@ -53,7 +53,8 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
             };
 
             if req.params.contains_key("cc") {
-                let (name, mut email) = send_to.split_once("<").unwrap();
+                let cc_to = decode_uri(req.params.get("cc").unwrap().clone());
+                let (name, mut email) = cc_to.split_once("<").unwrap();
                 let strng_email = email.replace(">", "");
                 email = &strng_email;
 
