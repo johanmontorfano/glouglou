@@ -63,9 +63,8 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
             }
 
             match sender.send_email(built_email) {
-                Ok(res) => {
+                Ok(_) => {
                     response.status = "MAIL_SENT".into();
-                    println!("{}: {}", res.code(), res.code().detail);
                 }
                 Err(reason) => {
                     println!("Failed to fetch email: {}", reason);

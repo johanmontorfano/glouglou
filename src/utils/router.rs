@@ -30,8 +30,6 @@ impl Router {
             None => path = req.clone().raw_url,
         };
 
-        println!("Routed to {}", path);
-
         if self.routes.contains_key(&path) {
             return self.routes.get(&path).unwrap()(&req, gen_conf);
         }
