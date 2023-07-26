@@ -24,7 +24,7 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
     {
         response.code = 200;
         response.status = "OK".into();
-        response.body = "CHECK STATUS CODE".into();
+        response.body = "OK".into();
 
         let remote_api_key = decode_uri(req.params.get("api-key").unwrap().clone());
         let local_api_key_data = APIKeyData::load_api_key().unwrap();
@@ -41,7 +41,7 @@ pub fn route(req: &Request, conf: &GenericConfiguration) -> Response {
             let strng_email = email.replace(">", "");
             email = &strng_email;
 
-            let sender = Turkey::make_smtp(&conf.email);
+            let sender = Turkey::make_smtp(&conf.email, &conf.dkim);
             let mut built_email = Email {
                 from_name: send_with_name.into(),
                 to_email: email.into(),

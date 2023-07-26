@@ -22,7 +22,7 @@ async fn main() {
     let log = Log::new("🦃".into());
 
     spawn(async {
-        // ! If the routine fails, there is no method implemented to make it recover from this fail.
+        // ! There is no method implemented to make it recover from this fail.
         sks_routine().await;
     });
 
@@ -41,12 +41,6 @@ async fn main() {
             "Will open a port at {}(HTTP) for turkeys.",
             converted_config.server.http_port
         ));
-        if converted_config.server.https_port.is_some() {
-            log.out(format!(
-                "Will open a port at {}(HTTPS) for turkeys.",
-                converted_config.server.https_port.unwrap()
-            ));
-        }
 
         http_server.listen(Some(true), converted_config);
     } else {
